@@ -1,0 +1,5 @@
+sudo apt-get update && sudo apt-get install -y apt-transport-https curl
+
+
+kubeadm join 172.16.12.27:6443 --token nkzviw.lqp8s3m79ot2bw5x \
+        --discovery-token-ca-cert-hash sha256:aa89551cda9d1d1061f0684dae09d10611dcf5b6852afb1ba7613971fee567a0

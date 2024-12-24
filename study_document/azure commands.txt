@@ -1,0 +1,31 @@
+Azure commands
+
+Upgrade process
+---------------
+az aks get-versions --location eastus<location of cluster> --output table
+az aks get-upgrades --resource-group <resource_groupname> --name <clustername> --output table
+
+Attache repoistory
+-----------------
+# az aks update -n <clustername> -g <resource-group> --attach-acr <azure repositoryname>
+Detach repository
+#az aks update -n <clustername> -g <resource-group> --detach-acr <azure reponame>
+Import the docker repository to azure repo
+#az acr repository list --name <repository name> --source docker.io/library/nginx:latest  --image nginx:v1
+#az acr repository list --name <repository name> --output table
+
+Get kubernetes config file
+--------------------------
+
+#az aks get-credentials --resoure-group <kubernetes resource group> --name <cluster_name>
+
+create load balancer az command
+
+#az aks create
+...
+--load-balancer-sku basic
+--outbound-type loadbalancer
+--
+
+
+

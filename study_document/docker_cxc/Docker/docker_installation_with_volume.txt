@@ -1,0 +1,50 @@
+#!/bin/bash
+
+# Update package list and install required dependencies
+sudo apt-get update
+sudo apt-get install -y ca-certificates curl
+
+# Create keyring directory and download Docker's GPG key
+sudo install -m 0755 -d /etc/apt/keyrings
+sudo curl -fsSL https://download.docker.com/linux/debian/gpg -o /etc/apt/keyrings/docker.asc
+sudo chmod a+r /etc/apt/keyrings/docker.asc
+
+# Add Docker's official repository to Apt sources
+echo \
+  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/debian \
+  $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
+  sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+
+# Update package list with new Docker repository
+sudo apt-get update
+
+# Install Docker and Docker-related packages
+sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+
+# Stop Docker service
+sudo systemctl stop docker
+
+# Create new directory for Docker volumes
+sudo mkdir -p /opt/docker
+
+# Modify Docker's data-root in the daemon.json configuration file
+sudo bash -c 'cat <<EOF > /etc/docker/daemon.json
+{
+  "data-root": "/opt/docker"
+}
+EOF'
+
+# Start Docker service again
+sudo systemctl start docker
+
+Docker 
+
+# Create required volumes for tomcat, freeswitch, postgres, and tomcat_logs
+docker volume create tomcat
+docker volume create freeswitch
+docker volume create postgres
+docker volume create tomcat_logs
+
+echo "Docker setup and volume configuration completed!"
+
+Do

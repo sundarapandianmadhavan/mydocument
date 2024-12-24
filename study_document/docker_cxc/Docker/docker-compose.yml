@@ -1,0 +1,47 @@
+version: '3.9'
+
+services:
+  tomcat:
+    image: tomcatv:1
+    container_name: tomcatv.10
+    ports:
+      - "9080:9080"
+    volumes:
+      - tomcat:/opt/apache-tomcat-9.0.78
+      - freeswitch:/usr/local/freeswitch:ro
+      - tomcat_logs:/usr/local/ApplicationLogs
+#    environment:
+#      - JAVA_OPTS=-Djava.security.egd=file:/dev/./urandom
+#    user: "0:0"  # Ensure the container runs as root (0:0 is root user and group)
+    restart: always
+
+  freeswitch:
+    image: freeswitch
+    container_name: freeswitchv.3
+    volumes:
+      - freeswitch:/usr/local/freeswitch
+    network_mode: host
+    restart: unless-stopped
+
+  postgres:
+    image: postgres
+    container_name: postgresqlv.3
+    environment:
+      POSTGRES_PASSWORD: P@ssw0rd
+    ports:
+      - "5432:5432"  # Map port 5433 on the host to port 5432 in the container
+    volumes:
+      - postgres:/var/lib/postgresql/data
+    restart: unless-stopped 
+
+volumes:
+  tomcat:
+    external: true
+    name: tomcat
+  freeswitch:
+    external: true
+    name: freeswitch
+  tomcat_logs:
+  postgres:
+    external: true
+    name: postgres

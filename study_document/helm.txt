@@ -1,0 +1,58 @@
+helm chart
+
+Install the helm chart
+
+1.curl -O https://get.helm.sh/helm-v3.16.2-linux-amd64.tar.gz
+2.tar xvf helm-v3.16.2-linux-amd64.tar.gz
+3.sudo mv linux-amd64/helm /usr/local/bin
+4.rm helm-v3.16.2-linux-amd64.tar.gz
+
+
+Create the helm chart
+
+helm create nginx
+
+apt-get install tree
+
+tree nginx
+
+no changes in Chart.yaml
+need to change the image name,replicas and service account in values.yaml
+
+Verify the changes whatever need in templates/deployment.yaml
+
+Check the template:
+
+helm template nginx
+
+check any error in template:
+
+helm lint nginx
+
+helm --debug --dry-run
+
+the next check which we are going to do is --dry-run helm is full of such useful utility which allows developer totest its configuration before running the final install command
+
+helm install nginx(release_name) --debug --dry-run nginx
+
+Install the application through helm chart
+
+helm install <app_name> nginx
+
+Upgrade the helm(if any modification in deployment or service )
+
+go to nginx/Chart.yaml
+
+change the version from 0.1.0
+
+version: 0.1.1
+
+Next i will change the image version from nginx:1.26 to nginx:latest
+
+go to nginx/values.yaml
+
+change the nginx image name
+
+save and exit
+
+helm upgrade myapp nginx

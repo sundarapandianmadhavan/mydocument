@@ -1,0 +1,83 @@
+FROM debian:latest
+RUN apt update && \
+    apt install postgresql postgresql-contrib
+EXPOSE 5432
+
+
+docker pull postgres:latest
+ docker run --name my-postgres -p 5432:5432 -v postgresql:/var/lib/postgresql/data -e POSTGRES_PASSWORD=P@ssw0rd -d  postgres
+docker exec -it my-postgres bash -c "psql -U postgres"
+
+dockerfile for tomcat
+FROM debian:latest
+
+RUN apt-get update && \
+    apt-get install -y default-jdk
+
+COPY apache-tomcat-9.0.78 /opt/apache-tomcat-9.0.78/
+
+RUN mkdir /opt/tomcat
+
+WORKDIR /opt/apache-tomcat-9.0.78/
+
+EXPOSE 8080
+
+CMD ["bin/catalina.sh", "run"]
+
+#docker build -t tomcat9.3 .
+#docker run --name cxc_app -p 8080:8080 -v /opt/docker_image/tomcat/data:/opt/tomcat -d tomcat9.1
+#docker exec -it tomcat9.1 bash
+
+
+Freeswitch # Use a base image with the desired Linux distribution
+FROM debian:bookworm
+
+# Set environment variables
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Install required packages
+RUN apt-get update && \
+    apt-get install -yq gnupg2 wget lsb-release && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+# Download and add the repository key
+RUN wget --http-user=signalwire --http-password=pat_9RHJx4nPSUwDBYbNny15NTvR -O /usr/share/keyrings/signalwire-freeswitch-repo.gpg https://freeswitch.signalwire.com/repo/deb/debian-release/signalwire-freeswitch-repo.gpg && \
+    echo "machine freeswitch.signalwire.com login signalwire password pat_9RHJx4nPSUwDBYbNny15NTvR" > /etc/apt/auth.conf && \
+    echo "deb [signed-by=/usr/share/keyrings/signalwire-freeswitch-repo.gpg] https://freeswitch.signalwire.com/repo/deb/debian-release/ $(lsb_release -sc) main" > /etc/apt/sources.list.d/freeswitch.list && \
+    echo "deb-src [signed-by=/usr/share/keyrings/signalwire-freeswitch-repo.gpg] https://freeswitch.signalwire.com/repo/deb/debian-release/ $(lsb_release -sc) main" >> /etc/apt/sources.list.d/freeswitch.list
+
+# Update the package index
+RUN apt-get update
+
+# Install build dependencies for FreeSWITCH
+RUN apt-get build-dep -y freeswitch
+
+# Clone FreeSWITCH source code
+RUN apt-get install -y git && \
+    cd /usr/src/ && \
+    git clone https://github.com/signalwire/freeswitch.git -bv1.10 freeswitch
+
+# Adjust permissions (if necessary)
+RUN chmod 777 -R /usr/src/freeswitch/libs/
+
+WORKDIR /usr/src/freeswitch
+RUN ./bootstrap.sh -j && \
+    ./configure && \
+    make && \
+    make install && \
+    make cd-sounds-install && \
+    make cd-moh-install
+
+# Clean up unnecessary packages and files
+RUN apt-get autoremove -y && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+# Expose ports for FreeSWITCH
+EXPOSE 5060/tcp 5060/udp 5061/tcp 7443/tcp 8081/tcp 16384-32768/udp
+
+# Set the entry point to start FreeSWITCH
+CMD ["freeswitch", "-nonat"]
+
+

@@ -1,0 +1,12 @@
+Openshift Build,Deployments and Image streams
+
+Builds:
+
+1.Webhook trigger : build the app image whenever the code changes
+2.Image trigger: build the app image whatever the base image or app runtime changes
+3.Build hooks: test the app image before pushing it to an image registry
+
+Deployments:
+
+Deployment trigger: redeploy app containers whenever configuration changes or the image changes in the openshift registry or upstream registeries
+

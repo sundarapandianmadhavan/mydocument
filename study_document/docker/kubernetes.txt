@@ -1,0 +1,76 @@
+Kubernetes minimum requirement
+
+1.2 Core
+2.4 GB RAM
+
+kubernetes not recommend to on the swap so begining itself we will off the swap
+#swapoff -a
+
+install the kubeadm,kublet,kubectl and docker
+
+start the docker service
+
+
+refer the below link
+
+https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/#check-required-ports
+
+kubeadm initialization
+
+sudo kubeadm init --apiserver-advertise-address <server address> --pod-network-cidr-172.16.0.0/16(pod network range)
+
+List of nodes through kubectl
+
+#kubectl get nodes
+
+Deploying Flannel with kubectl
+#kubectl apply -f https://github.com/flannel-io/flannel/releases/latest/download/kube-flannel.yml
+
+describe the kubernetes node
+
+kubectl descrie node <node_name>
+
+
+Master IP - 172.16.10.14
+Node IP - 172.16.10.29
+
+list the kubernets resources
+
+kubectl get nodes
+kubectl get deploy
+kubectl get svc
+kubectl get pods
+
+Kubectl help
+
+deployment
+
+kubectl apply -f <filename.yaml>
+
+kubectl delete pod <pod_name>
+
+kubectl edit deploy <deployment_name>
+
+kubectl get deploy <deployment_name> -o yaml
+
+kubectl get pods -o wide --> pod running in which server
+
+directly run the kubernetes without yaml file
+
+kubectl run httpd --image=httpd --replicas=1 --port=80 but not roleback the option
+
+Server side validation of any errors
+kubectl apply -f <your-deployment-file>.yaml --validate=true
+
+Kubernetes networking types
+
+1.Container to container communication
+2.Pod to Pod communication
+  1.Intra-node pod network
+  2.Inter-node pod network
+3.Pod to service communication
+4.External to Service communication
+  1.Cluster ip
+  2.NodePort
+  3.LoadBalancer
+  4.Extername
